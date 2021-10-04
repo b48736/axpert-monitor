@@ -2,10 +2,9 @@
 
 Monitor Voltronic/Axpert inverter via USB
 
-
 ## Why
 
-I and couldn't find another node based solution.
+I and couldn't find another node based solution. But thanks to [JosefKrieglstein's python implementation](https://github.com/JosefKrieglstein/AxpertControl) for useful information.
 
 #### Why node
 
@@ -16,8 +15,8 @@ I like node and I have other software I wanted to integrate it with.
 It allows direct connection without bothering with Serial converters.
 
 ## Interface Design
-See [design documentation](./documentation/design.md)
 
+See [design documentation](./documentation/design.md)
 
 ## Installation
 
@@ -33,11 +32,11 @@ Globally for CLI interface
 npm i -g axpert-monitor
 ```
 
-
 ## Usage
 
 ### Important note
-This module has only been tested on Raspbian GNU/Linux 10 (buster). 
+
+This module has only been tested on Raspbian GNU/Linux 10 (buster).
 
 In order for this module to access hidraw interface, some OS changes are necessary. See full details on the [nide-hid library page](https://github.com/node-hid/node-hid#udev-device-permissions)
 
@@ -46,7 +45,6 @@ A helper script has been added to automate the udev changes. This has only been 
 ```sh
 npm run udev-setup
 ```
-
 
 ### CLI
 

@@ -34,4 +34,19 @@ describe("01 - hid", () => {
       expect(err.message).contains("cannot open device");
     }
   });
+
+  it("should close HID on stop", async () => {
+    const hidStub = sinon
+      .stub(HID, "HID")
+      .returns({ on: () => {}, close: () => {} });
+
+    const monitor = new AxpertMonitor();
+
+    const closeSpy = sinon.spy(monitor.hid, "close");
+    monitor.stop();
+
+    expect(closeSpy.callCount).eql(1);
+    closeSpy.restore();
+    hidStub.restore();
+  });
 });

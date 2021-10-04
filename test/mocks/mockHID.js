@@ -17,6 +17,8 @@ class mockHID extends EventEmitter {
     });
   }
 
+  close() {}
+
   async write(command) {
     const messageLength = command.length - 3;
     const commandString = command.slice(0, messageLength).toString();
