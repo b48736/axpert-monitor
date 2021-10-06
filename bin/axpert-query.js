@@ -7,6 +7,11 @@ const argv = yargs(hideBin(process.argv)).options("command", {
 
 const command = argv.command || "QID";
 
+if (command[0] !== "Q") {
+  console.error("A Query must start with 'Q' - Exiting");
+  process.exit(1);
+}
+
 console.log(`Sending command: ${command}`);
 
 async function query() {

@@ -2,10 +2,14 @@ const EventEmitter = require("events");
 const sleep = require("util").promisify(setTimeout);
 const getCRC = require("../../lib/crc");
 const async = require("async");
+const CR = Buffer.from("\r");
+const sampleResonses = require("./sampleData");
 
 const MESSAGES = {
-  TEST: "(TEST RESPONSE",
-  TOO_LONG: `(${Buffer.alloc(500, "X").toString()}`,
+  TEST: `(TEST RESPONSE`,
+  LONG: `(${Buffer.alloc(500, "X").toString()}`,
+  STRT: `NO START CHARACTER`,
+  END: `(MISSING END CR`,
 };
 
 class mockHID extends EventEmitter {
@@ -19,31 +23,47 @@ class mockHID extends EventEmitter {
 
   close() {}
 
-  async write(command) {
+  write(command) {
     const messageLength = command.length - 3;
     const commandString = command.slice(0, messageLength).toString();
-    if (commandString.includes("ECHO:")) {
-      const echo = commandString.split("ECHO:").pop();
+    if (commandString.includes("E:")) {
+      const echo = commandString.split("E:").pop();
       this.respond(`(${echo}`);
       return;
     }
 
+    // use sample responses for known Queries
+    if (commandString[0] === "Q") {
+      const resp = Buffer.from(sampleResonses[commandString].raw, "hex");
+      this.responseQ.push(resp);
+      return;
+    }
+
     switch (commandString) {
-      // case "TOO_SHORT":
+      // case "SHORT":
       //   return this.respond("");
       //   break;
 
-      // case "TOO_LONG":
+      // case "LONG":
       //   this.respond(`(${Buffer.alloc(500, "X").toString()}`);
       //   break;
 
-      case "BAD_RESPONSE":
-        this.responseQ.push(Buffer.from("(BAD RESPONSE**\r"));
+      case "CRC":
+        this.responseQ.push(Buffer.from("(BAD RESPONSE CRC**\r"));
         break;
 
-      case "DOUBLE_RESPONSE":
+      case "DUB":
         this.responseQ.push(Buffer.from("(BAD RESPONSE**\r"));
         this.respond(MESSAGES.TEST);
+        break;
+
+      case "END":
+        this.responseQ.push(
+          Buffer.concat([
+            Buffer.from(MESSAGES[commandString]),
+            getCRC(MESSAGES[commandString]),
+          ])
+        );
         break;
 
       default:
@@ -56,9 +76,9 @@ class mockHID extends EventEmitter {
     if (resp === undefined) {
       await sleep(10);
       this.emit("error", Error("Mock Error"));
+      return;
     }
 
-    const CR = Buffer.from("\r");
     const respBuffer = Buffer.concat([Buffer.from(resp), getCRC(resp), CR]);
     this.responseQ.push(respBuffer);
   }

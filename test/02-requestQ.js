@@ -14,8 +14,12 @@ describe("02 - requestQ", function () {
     monitor = new AxpertMonitor();
   });
 
-  it("should throw error if command is not known", async () => {
-    const testCommand = "ERROR";
+  after(() => {
+    sinon.restore();
+  });
+
+  it("should reject request if there is an error", async () => {
+    const testCommand = "ERR";
 
     try {
       await monitor.request(testCommand);
@@ -25,7 +29,7 @@ describe("02 - requestQ", function () {
     }
   });
 
-  it("should return response if command is known", async () => {
+  it("should resolve with response if request is successful", async () => {
     const testCommand = "TEST";
 
     const response = await monitor.request(testCommand);
@@ -36,8 +40,10 @@ describe("02 - requestQ", function () {
     const messageCount = 10;
     const testCommands = [];
     for (let i = 0; i < messageCount; i++) {
-      testCommands.push(`ECHO:${i}`);
+      testCommands.push(`E:${i}`);
     }
+
+    const qSpy = sinon.spy(monitor, "processRequestQ");
 
     const responseOrder = [];
 
@@ -48,14 +54,17 @@ describe("02 - requestQ", function () {
     });
 
     expect(responseOrder.length).eql(messageCount);
+    expect(qSpy.callCount).eql(messageCount);
+
     for (let i = 0; i < messageCount; i++) {
+      expect(qSpy.args[i][0].command).eql(testCommands[i]);
       expect(responseOrder[i] < responseOrder[i + 1]);
     }
   });
 
-  it("should time out", async () => {
+  it("should reject request after time out", async () => {
     const timeout = 20;
-    const testCommand = "TOO_LONG";
+    const testCommand = "LONG";
     const startTime = Date.now();
     try {
       await monitor.request(testCommand, { timeout });
@@ -68,7 +77,7 @@ describe("02 - requestQ", function () {
   });
 
   it("time out after first response should not affect the next request", async () => {
-    let testCommand = "TOO_LONG";
+    let testCommand = "LONG";
 
     try {
       await monitor.request(testCommand, { timeout: 20 });
@@ -84,7 +93,7 @@ describe("02 - requestQ", function () {
   });
 
   it("time out before first resposne should not affect the next request", async () => {
-    let testCommand = "TOO_LONG";
+    let testCommand = "LONG";
 
     try {
       await monitor.request(testCommand, { timeout: 1 });
@@ -99,24 +108,21 @@ describe("02 - requestQ", function () {
     expect(response).eql("TEST RESPONSE");
   });
 
-  it("should throw error if response CRC does not match", async () => {
-    const testCommand = "BAD_RESPONSE";
+  it("should split long requests into chuks of at most 8 bytes", async () => {
+    const testCommand = "LONGLONG";
+
+    const writeSpy = sinon.spy(monitor.hid, "write");
+
+    // this will throw, but at least check if write is called twice
     try {
       await monitor.request(testCommand);
-      throw Error("unexpected");
     } catch (err) {
-      expect(err.message).includes("CRC missmatch");
+      // ignore error for unsupported message
     }
-  });
 
-  it("should not reject twice if throw after timeout", async () => {
-    const testCommand = "ERROR";
-
-    try {
-      await monitor.request(testCommand, { timeout: 1 });
-      throw Error("unexpected");
-    } catch (err) {
-      expect(err.message).eql("Request timed out");
-    }
+    expect(writeSpy.callCount).eql(2);
+    expect(writeSpy.args[0][0].length).eql(8);
+    expect(writeSpy.args[1][0].length).eql(3);
+    writeSpy.restore();
   });
 });
