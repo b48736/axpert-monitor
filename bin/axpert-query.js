@@ -1,6 +1,7 @@
 const AxpertUSB = require("../lib/axpertUSB");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
+const { queryParsers } = require("../lib/queries/queries");
 const argv = yargs(hideBin(process.argv)).options("command", {
   alias: "c",
 }).argv;
@@ -18,7 +19,11 @@ async function query() {
   let axpert = null;
   try {
     axpert = new AxpertUSB();
-    const resp = await axpert.request(command);
+    let resp = await axpert.request(command);
+
+    if (queryParsers[command]) {
+      resp = JSON.stringify(queryParsers[command](resp), null, 2);
+    }
     console.log(resp);
   } catch (err) {
     console.log(err.message);

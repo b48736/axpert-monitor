@@ -35,6 +35,9 @@ class mockHID extends EventEmitter {
     // use sample responses for known Queries
     if (commandString[0] === "Q") {
       const resp = Buffer.from(sampleResonses[commandString].raw, "hex");
+      if (resp.length === 0) {
+        throw Error(`No sample data for command: ${commandString}`);
+      }
       this.responseQ.push(resp);
       return;
     }
