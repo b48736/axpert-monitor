@@ -1,12 +1,12 @@
 const expect = require("chai").expect;
 const sinon = require("sinon");
 const HID = require("node-hid");
-const AxpertMonitor = require("../index");
+const AxpertUSB = require("../index");
 
 describe("01 - hid", () => {
   it("should create an instance with default VID & PID", async () => {
     const hidStub = sinon.stub(HID, "HID").returns({ on: () => {} });
-    new AxpertMonitor();
+    new AxpertUSB();
     expect(hidStub.callCount).eql(1);
     expect(hidStub.args[0][0]).eql(1637);
     expect(hidStub.args[0][1]).eql(20833);
@@ -17,7 +17,7 @@ describe("01 - hid", () => {
     const VID = 1;
     const PID = 2;
     const hidStub = sinon.stub(HID, "HID").returns({ on: () => {} });
-    new AxpertMonitor(VID, PID);
+    new AxpertUSB(VID, PID);
     expect(hidStub.callCount).eql(1);
     expect(hidStub.args[0][0]).eql(VID);
     expect(hidStub.args[0][1]).eql(PID);
@@ -28,7 +28,7 @@ describe("01 - hid", () => {
     const VID = 1;
     const PID = 2;
     try {
-      new AxpertMonitor(VID, PID);
+      new AxpertUSB(VID, PID);
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).contains("cannot open device");
@@ -40,10 +40,10 @@ describe("01 - hid", () => {
       .stub(HID, "HID")
       .returns({ on: () => {}, close: () => {} });
 
-    const monitor = new AxpertMonitor();
+    const axpert = new AxpertUSB();
 
-    const closeSpy = sinon.spy(monitor.hid, "close");
-    monitor.stop();
+    const closeSpy = sinon.spy(axpert.hid, "close");
+    axpert.stop();
 
     expect(closeSpy.callCount).eql(1);
     closeSpy.restore();

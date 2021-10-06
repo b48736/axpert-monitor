@@ -48,4 +48,20 @@ npm run udev-setup
 
 ### CLI
 
+#### axpert-query
+
+Sends any inquiry command via CLI and prints raw string response.
+
+##### parameters
+
+- -c, --command: the inquery command to send. Must start with a 'Q'
+
+##### Example
+
+```sh
+$ axpert-query -c QPI
+Sending command: QPI
+PI30
+```
+
 ### Programatically

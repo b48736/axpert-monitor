@@ -2,17 +2,17 @@ const expect = require("chai").expect;
 const sinon = require("sinon");
 const HID = require("node-hid");
 const mockHID = require("./mocks/mockHID");
-const AxpertMonitor = require("../index");
+const AxpertUSB = require("../index");
 const async = require("async");
 const sleep = require("util").promisify(setTimeout);
 
 describe("03 - message parsing", function () {
   this.timeout(30000);
-  let monitor = null;
+  let axpert = null;
 
   before(() => {
     sinon.replace(HID, "HID", mockHID);
-    monitor = new AxpertMonitor();
+    axpert = new AxpertUSB();
   });
 
   after(() => {
@@ -22,7 +22,7 @@ describe("03 - message parsing", function () {
   it("should time out if response does not have a valid start", async () => {
     const testCommand = "STRT";
     try {
-      await monitor.request(testCommand, { timeout: 100 });
+      await axpert.request(testCommand, { timeout: 100 });
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).eql("Request timed out");
@@ -32,7 +32,7 @@ describe("03 - message parsing", function () {
   it("should time out if response does not have a valid end", async () => {
     const testCommand = "END";
     try {
-      await monitor.request(testCommand, { timeout: 100 });
+      await axpert.request(testCommand, { timeout: 100 });
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).eql("Request timed out");
@@ -42,7 +42,7 @@ describe("03 - message parsing", function () {
   it("should reject request if response CRC is incorrect", async () => {
     const testCommand = "CRC";
     try {
-      await monitor.request(testCommand);
+      await axpert.request(testCommand);
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).includes("CRC missmatch");
@@ -53,7 +53,7 @@ describe("03 - message parsing", function () {
     const testCommand = "ERROR";
 
     try {
-      await monitor.request(testCommand, { timeout: 1 });
+      await axpert.request(testCommand, { timeout: 1 });
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).eql("Request timed out");
@@ -65,7 +65,7 @@ describe("03 - message parsing", function () {
 
   it("should ignore CRC error for QOPM command", async () => {
     const testCommand = "QOPM";
-    const response = await monitor.request(testCommand);
+    const response = await axpert.request(testCommand);
     expect(response).eql("01");
   });
 });

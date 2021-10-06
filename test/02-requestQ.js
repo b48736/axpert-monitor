@@ -2,16 +2,16 @@ const expect = require("chai").expect;
 const sinon = require("sinon");
 const HID = require("node-hid");
 const mockHID = require("./mocks/mockHID");
-const AxpertMonitor = require("../index");
+const AxpertUSB = require("../index");
 const async = require("async");
 
 describe("02 - requestQ", function () {
   this.timeout(30000);
-  let monitor = null;
+  let axpert = null;
 
   before(() => {
     sinon.replace(HID, "HID", mockHID);
-    monitor = new AxpertMonitor();
+    axpert = new AxpertUSB();
   });
 
   after(() => {
@@ -22,7 +22,7 @@ describe("02 - requestQ", function () {
     const testCommand = "ERR";
 
     try {
-      await monitor.request(testCommand);
+      await axpert.request(testCommand);
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).eql("Mock Error");
@@ -32,7 +32,7 @@ describe("02 - requestQ", function () {
   it("should resolve with response if request is successful", async () => {
     const testCommand = "TEST";
 
-    const response = await monitor.request(testCommand);
+    const response = await axpert.request(testCommand);
     expect(response).eql("TEST RESPONSE");
   });
 
@@ -43,12 +43,12 @@ describe("02 - requestQ", function () {
       testCommands.push(`E:${i}`);
     }
 
-    const qSpy = sinon.spy(monitor, "processRequestQ");
+    const qSpy = sinon.spy(axpert, "processRequestQ");
 
     const responseOrder = [];
 
     await async.each(testCommands, async (testCommand) => {
-      const resp = await monitor.request(testCommand);
+      const resp = await axpert.request(testCommand);
       const order = parseInt(resp);
       responseOrder.push(order);
     });
@@ -67,7 +67,7 @@ describe("02 - requestQ", function () {
     const testCommand = "LONG";
     const startTime = Date.now();
     try {
-      await monitor.request(testCommand, { timeout });
+      await axpert.request(testCommand, { timeout });
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).eql("Request timed out");
@@ -80,7 +80,7 @@ describe("02 - requestQ", function () {
     let testCommand = "LONG";
 
     try {
-      await monitor.request(testCommand, { timeout: 20 });
+      await axpert.request(testCommand, { timeout: 20 });
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).eql("Request timed out");
@@ -88,7 +88,7 @@ describe("02 - requestQ", function () {
 
     testCommand = "TEST";
 
-    const response = await monitor.request(testCommand);
+    const response = await axpert.request(testCommand);
     expect(response).eql("TEST RESPONSE");
   });
 
@@ -96,7 +96,7 @@ describe("02 - requestQ", function () {
     let testCommand = "LONG";
 
     try {
-      await monitor.request(testCommand, { timeout: 1 });
+      await axpert.request(testCommand, { timeout: 1 });
       throw Error("unexpected");
     } catch (err) {
       expect(err.message).eql("Request timed out");
@@ -104,18 +104,18 @@ describe("02 - requestQ", function () {
 
     testCommand = "TEST";
 
-    const response = await monitor.request(testCommand);
+    const response = await axpert.request(testCommand);
     expect(response).eql("TEST RESPONSE");
   });
 
   it("should split long requests into chuks of at most 8 bytes", async () => {
     const testCommand = "LONGLONG";
 
-    const writeSpy = sinon.spy(monitor.hid, "write");
+    const writeSpy = sinon.spy(axpert.hid, "write");
 
     // this will throw, but at least check if write is called twice
     try {
-      await monitor.request(testCommand);
+      await axpert.request(testCommand);
     } catch (err) {
       // ignore error for unsupported message
     }

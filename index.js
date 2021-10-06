@@ -1,1 +1,1 @@
-module.exports = require("./lib/axpertMonitor");
+module.exports = require("./lib/axpertUSB");

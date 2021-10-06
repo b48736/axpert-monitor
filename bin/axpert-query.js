@@ -1,4 +1,4 @@
-const AxpertMonitor = require("../lib/axpertMonitor");
+const AxpertUSB = require("../lib/axpertUSB");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const argv = yargs(hideBin(process.argv)).options("command", {
@@ -15,15 +15,15 @@ if (command[0] !== "Q") {
 console.log(`Sending command: ${command}`);
 
 async function query() {
-  let monitor = null;
+  let axpert = null;
   try {
-    monitor = new AxpertMonitor();
-    const resp = await monitor.request(command);
+    axpert = new AxpertUSB();
+    const resp = await axpert.request(command);
     console.log(resp);
   } catch (err) {
     console.log(err.message);
   }
-  monitor.stop();
+  axpert.stop();
 }
 
 query();
