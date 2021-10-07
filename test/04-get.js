@@ -76,4 +76,69 @@ describe("04 - get interface", function () {
     expect(response).property("alarmOnPrimaryInterrupt", false);
     expect(response).property("faultCodeRecord", false);
   });
+
+  it("should get formatted general device status", async () => {
+    const response = await axpert.get.generalStatus();
+    expect(response).property("gridVoltage", 233.8);
+    expect(response).property("gridFrequency", 49.8);
+    expect(response).property("outputVoltage", 230.2);
+    expect(response).property("outputFrequency", 49.8);
+    expect(response).property("outputPowerApparent", 277);
+    expect(response).property("outputPowerActive", 250);
+    expect(response).property("outputLoadPercent", 5);
+    expect(response).property("busVoltage", 363);
+    expect(response).property("batteryVoltage", 52);
+    expect(response).property("batteryChargingCurrent", 0);
+    expect(response).property("batteryCapacity", 28);
+    expect(response).property("temperature", 45);
+    expect(response).property("PVBatteryCurrent", 0);
+    expect(response).property("PVInputVoltage", 289.6);
+    expect(response).property("batteryVoltageSCC", 0);
+    expect(response).property("batteryDischargeCurrent", 1);
+    expect(response).property("status");
+    expect(response.status).property("addSBUPriorityVersion", false);
+    expect(response.status).property("configChanged", false);
+    expect(response.status).property("sccFirmwareUpdates", false);
+    expect(response.status).property("loadOn", true);
+    expect(response.status).property("batteryVoltToSteady", false);
+    expect(response.status).property("charging", false);
+    expect(response.status).property("chargingSCC", true);
+    expect(response.status).property("chargingAC", false);
+  });
+
+  it("should get formatted device mode", async () => {
+    const response = await axpert.get.mode();
+    expect(response).eql("Battery");
+  });
+
+  it("should get formatted warning device status", async () => {
+    const response = await axpert.get.warningStatus();
+    expect(response).property("inverterFault", "Fault");
+    expect(response).property("busOver", "OK");
+    expect(response).property("busUnder", "OK");
+    expect(response).property("busSoftFail", "OK");
+    expect(response).property("lineFail", "OK");
+    expect(response).property("opvShort", "OK");
+    expect(response).property("inverterVoltageLow", "OK");
+    expect(response).property("inverterVoltageHigh", "OK");
+    expect(response).property("overTemp", "OK");
+    expect(response).property("fanLocked", "OK");
+    expect(response).property("batteryVoltageHigh", "Fault");
+    expect(response).property("batteryLowAlarm", "OK");
+    expect(response).property("batteryUnderShutdown", "OK");
+    expect(response).property("overLoad", "OK");
+    expect(response).property("eepromFault", "OK");
+    expect(response).property("inverterOverCurrent", "OK");
+    expect(response).property("inverterSoftFail", "OK");
+    expect(response).property("selfTestFail", "OK");
+    expect(response).property("opDcVoltageOver", "OK");
+    expect(response).property("batOpen", "OK");
+    expect(response).property("currentSensorFail", "OK");
+    expect(response).property("batteryShort", "OK");
+    expect(response).property("powerLimit", "OK");
+    expect(response).property("pvVoltageHigh", "OK");
+    expect(response).property("mpptOverloadFault", "OK");
+    expect(response).property("mpptOverloadWarning", "OK");
+    expect(response).property("batteryTooLowToCharge", "OK");
+  });
 });
