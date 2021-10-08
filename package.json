@@ -1,0 +1,42 @@
+{
+  "name": "axpert-monitor",
+  "version": "0.0.1",
+  "description": "Monitor Voltronic/Axpert inverter via USB",
+  "main": "index.js",
+  "scripts": {
+    "coverage": "nyc --reporter=lcov --reporter=text mocha",
+    "lint": "eslint .",
+    "test": "mocha",
+    "udev-setup": "./setup/udev_setup.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b48736/axpert-monitor.git"
+  },
+  "keywords": [
+    "Axpert",
+    "Inverter",
+    "Voltronic"
+  ],
+  "author": "b48736",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/b48736/axpert-monitor/issues"
+  },
+  "homepage": "https://github.com/b48736/axpert-monitor#readme",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "mocha": "^9.1.2",
+    "nyc": "^15.1.0",
+    "prettier": "^2.4.1",
+    "sinon": "^11.1.2"
+  },
+  "dependencies": {
+    "async": "^3.2.1",
+    "chai": "^4.3.4",
+    "crc": "^3.8.0",
+    "lodash": "^4.17.21",
+    "node-hid": "^2.1.1",
+    "yargs": "^17.2.1"
+  }
+}
