@@ -1,13 +1,17 @@
 {
   "name": "axpert-monitor",
-  "version": "0.0.1",
+  "version": "0.0.2-test",
   "description": "Monitor Voltronic/Axpert inverter via USB",
   "main": "index.js",
   "scripts": {
     "coverage": "nyc --reporter=lcov --reporter=text mocha",
     "lint": "eslint .",
     "test": "mocha",
-    "udev-setup": "./setup/udev_setup.sh"
+    "udev-setup": "./setup/udev-setup.sh"
+  },
+  "bin": {
+    "axpert-query": "./bin/axpert-query.js",
+    "axpert-udev-setup": "./setup/udev-setup.sh"
   },
   "repository": {
     "type": "git",

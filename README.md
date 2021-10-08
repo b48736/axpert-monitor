@@ -46,6 +46,11 @@ A helper script has been added to automate the udev changes. This has only been 
 npm run udev-setup
 ```
 
+Or, if the module is globally installed:
+```sh
+axpert-udev-setup
+```
+
 ### CLI
 
 #### axpert-query
