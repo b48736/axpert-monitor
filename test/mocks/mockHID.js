@@ -3,7 +3,7 @@ const sleep = require("util").promisify(setTimeout);
 const getCRC = require("../../lib/crc");
 const async = require("async");
 const CR = Buffer.from("\r");
-const sampleResonses = require("./sampleData");
+const { sampleQueryResponses, alternativeQueryResponses } = require("./sampleData");
 
 const MESSAGES = {
   TEST: `(TEST RESPONSE`,
@@ -34,7 +34,7 @@ class mockHID extends EventEmitter {
 
     // use sample responses for known Queries
     if (commandString[0] === "Q") {
-      const resp = Buffer.from(sampleResonses[commandString].raw, "hex");
+      const resp = getSampleResponse(commandString);
       if (resp.length === 0) {
         throw Error(`No sample data for command: ${commandString}`);
       }
@@ -61,12 +61,7 @@ class mockHID extends EventEmitter {
         break;
 
       case "END":
-        this.responseQ.push(
-          Buffer.concat([
-            Buffer.from(MESSAGES[commandString]),
-            getCRC(MESSAGES[commandString]),
-          ])
-        );
+        this.responseQ.push(Buffer.concat([Buffer.from(MESSAGES[commandString]), getCRC(MESSAGES[commandString])]));
         break;
 
       default:
@@ -95,6 +90,14 @@ class mockHID extends EventEmitter {
       await sleep(5);
     }
   }
+}
+
+function getSampleResponse(commandString) {
+  if (process.env.ALT_DATASET === "true") {
+    return Buffer.from(alternativeQueryResponses[commandString].raw, "hex");
+  }
+
+  return Buffer.from(sampleQueryResponses[commandString].raw, "hex");
 }
 
 module.exports = mockHID;
