@@ -3,8 +3,6 @@ const sinon = require("sinon");
 const HID = require("node-hid");
 const mockHID = require("./mocks/mockHID");
 const AxpertMonitor = require("../index");
-const async = require("async");
-const sleep = require("util").promisify(setTimeout);
 
 describe("04 - get interface", function () {
   this.timeout(30000);

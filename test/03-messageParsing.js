@@ -3,7 +3,6 @@ const sinon = require("sinon");
 const HID = require("node-hid");
 const mockHID = require("./mocks/mockHID");
 const AxpertUSB = require("../index");
-const async = require("async");
 const sleep = require("util").promisify(setTimeout);
 
 describe("03 - message parsing", function () {
