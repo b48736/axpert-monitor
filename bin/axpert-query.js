@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const AxpertUSB = require("../lib/axpertUSB");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
