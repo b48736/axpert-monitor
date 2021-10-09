@@ -3,7 +3,6 @@
 const AxpertUSB = require("../lib/axpertUSB");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
-const { queryParsers } = require("../lib/queries/queries");
 const argv = yargs(hideBin(process.argv))
   .options("command", {
     alias: "c",
