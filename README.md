@@ -47,6 +47,7 @@ npm run udev-setup
 ```
 
 Or, if the module is globally installed:
+
 ```sh
 axpert-udev-setup
 ```
@@ -106,6 +107,30 @@ Sending command: QPIGS
 235.9 50.1 231.7 50.1 0344 0272 006 368 52.90 000 037 0050 0000 000.0 00.00 00005 00010000 00 00 00000 010
 ```
 
+#### axpert-set
+
+> **Note**
+> This seems quite fragile. Responses seem to either not contain a CRC or simply returns NAK for a valid command. ¯\\\_(ツ)\_/¯
+
+Sends a set command via CLI and returns the respose - ACK if successful, NACK if command failed.
+
+##### parameters
+
+- -c, --command: the set command to send. Typically starts with a 'P', 'M' or 'F'
+- -v, --value: the value to set. The string is used directly so make sure it is correct
+
+##### Example - Set output mode to Utility
+
+```sh
+$ axpert-set -c POP -v 00
+Sending command: 'POP00'
+ACK
+```
+
+**USE AT OWN RISK**
+
+_Changing some parameters while the inverter is in use (like the output frequency) is probably not a good idea._
+
 ### Programatically
 
 ## Limitations / Future
@@ -130,3 +155,7 @@ One solution would be to use the device path like:
 > /dev/hidraw2
 
 Another option is to detect all matching devices, query each and allow selecting based on the serial number, or simply specify the offset (0th, 1st device found).
+
+```
+
+```
