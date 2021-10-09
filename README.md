@@ -109,9 +109,8 @@ Sending command: QPIGS
 
 #### axpert-set
 
-**USE AT OWN RISK**
-
-_Changing some parameters while the inverter is in use (like the output frequency) is probably not a good idea._
+> **Note**
+> This seems quite fragile. Responses seem to either not contain a CRC or simply returns NAK for a valid command. ¯\\\_(ツ)\_/¯
 
 Sends a set command via CLI and returns the respose - ACK if successful, NACK if command failed.
 
@@ -127,6 +126,10 @@ $ axpert-set -c POP -v 00
 Sending command: 'POP00'
 ACK
 ```
+
+**USE AT OWN RISK**
+
+_Changing some parameters while the inverter is in use (like the output frequency) is probably not a good idea._
 
 ### Programatically
 
