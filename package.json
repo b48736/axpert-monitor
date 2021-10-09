@@ -11,6 +11,7 @@
   },
   "bin": {
     "axpert-query": "./bin/axpert-query.js",
+    "axpert-set": "./bin/axpert-set.js",
     "axpert-udev-setup": "./setup/udev-setup.sh"
   },
   "repository": {
