@@ -87,4 +87,4 @@ const setCommandResponses = {
   },
 };
 
-module.exports = { sampleQueryResponses, alternativeQueryResponses };
+module.exports = { sampleQueryResponses, alternativeQueryResponses, setCommandResponses };

@@ -14,6 +14,10 @@ I like node and I have other node based packages I wanted to integrate it with.
 
 It allows direct connection without bothering with RS232 converters.
 
+#### Why Serial
+
+It was easy to add, so why not?
+
 ## Interface Design
 
 The general thinking is captured in the [design documentation](./documentation/design.md)
@@ -34,7 +38,7 @@ npm i -g axpert-monitor
 
 ## Usage
 
-### Important note
+### Important note on USB HID interface
 
 This module has only been tested on Raspbian GNU/Linux 10 (buster).
 
@@ -52,16 +56,31 @@ Or, if the module is globally installed:
 axpert-udev-setup
 ```
 
+### Important note on serial interface
+
+Remeber to add user to dialout group if not already added to allow accessing serial port
+
+```sh
+sudo useradd <current_user> dialout
+```
+
 ### CLI
 
 #### axpert-query
 
 Sends any inquiry command via CLI and prints formatted response if a parser is implemented for the query, otherwise the raw string response is printed.
 
+If no connection parameters are specified this will use the USB interface with default VendorID and ProductID values.
+
 ##### parameters
 
 - -c, --command: the inquery command to send. Must start with a 'Q'
-- -r, --raw: show the raw, unformatted response string
+- -r, --raw: show the raw, unformatted response string, default=false
+- -h, --hid: USB HID raw path, e.g. /dev/hidraw1
+- -p, --port: Serial port for tty interface, e.g. /dev/ttyUSB0
+- -V, --vid: VendorID to use for HID interface, default=0x665
+- -P, --pid: ProductID to use for HID interface, default=0x5161
+- -t, --timeout: query timeout in MS, default=10000
 
 ##### Example - formatted
 
@@ -99,25 +118,29 @@ Sending command: QPIGS
 
 ```
 
-##### Example - raw
+##### Example - raw using ttyUSB0
 
 ```sh
-$ axpert-query -c QPIGS -r
+$ axpert-query -c QPIGS -r -p /dev/ttyUSB0
 Sending command: QPIGS
 235.9 50.1 231.7 50.1 0344 0272 006 368 52.90 000 037 0050 0000 000.0 00.00 00005 00010000 00 00 00000 010
 ```
 
 #### axpert-set
 
-> **Note**
-> This seems quite fragile. Responses seem to either not contain a CRC or simply returns NAK for a valid command. ¯\\\_(ツ)\_/¯
-
 Sends a set command via CLI and returns the respose - ACK if successful, NACK if command failed.
+
+If no connection parameters are specified this will use the USB interface with default VendorID and ProductID values.
 
 ##### parameters
 
 - -c, --command: the set command to send. Typically starts with a 'P', 'M' or 'F'
 - -v, --value: the value to set. The string is used directly so make sure it is correct
+- -h, --hid: USB HID raw path, e.g. /dev/hidraw1
+- -p, --port: Serial port for tty interface, e.g. /dev/ttyUSB0
+- -V, --vid: VendorID to use for HID interface, default=0x665
+- -P, --pid: ProductID to use for HID interface, default=0x5161
+- -t, --timeout: query timeout in MS, default=10000
 
 ##### Example - Set output mode to Utility
 
@@ -143,19 +166,3 @@ Currently only some inquery commands have parsers implemented. The following are
 - QDI
 - QMCHGCR
 - QMUCHGCR
-
-### multiple inverter support
-
-The module tries to connect to the inverter using the VendorID and ProductID and has only been tested with a single inverter connected on USB at a time.
-
-If multiple inverters are connected that match the VID and PID, a mechanism would be needed to select the desired inverter.
-
-One solution would be to use the device path like:
-
-> /dev/hidraw2
-
-Another option is to detect all matching devices, query each and allow selecting based on the serial number, or simply specify the offset (0th, 1st device found).
-
-```
-
-```

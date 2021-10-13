@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const AxpertUSB = require("../lib/axpertTTY");
+const AxpertMonitor = require("../lib/axpertMonitor");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const argv = yargs(hideBin(process.argv))
@@ -13,6 +13,31 @@ const argv = yargs(hideBin(process.argv))
     alias: "v",
     type: "string",
     description: "value to set",
+  })
+  .options("hid", {
+    alias: "h",
+    type: "string",
+    description: "USB HID raw path, e.g. /dev/hidraw1",
+  })
+  .options("port", {
+    alias: "p",
+    type: "string",
+    description: "Serial port for tty interface, e.g. /dev/ttyUSB0",
+  })
+  .options("vid", {
+    alias: "V",
+    type: "number",
+    description: "VendorID to use for HID interface, default=0x665",
+  })
+  .options("pid", {
+    alias: "P",
+    type: "number",
+    description: "ProductID to use for HID interface, default=0x5161",
+  })
+  .options("timeout", {
+    alias: "t",
+    type: "number",
+    description: "query timeout in MS, default=10000",
   }).argv;
 
 if (!argv.command) {
@@ -32,7 +57,7 @@ console.log(`Sending command: '${setCommand}'`);
 async function set() {
   let axpert = null;
   try {
-    axpert = new AxpertUSB();
+    axpert = new AxpertMonitor(argv);
     const resp = await axpert.request(setCommand);
     console.log(resp);
   } catch (err) {
