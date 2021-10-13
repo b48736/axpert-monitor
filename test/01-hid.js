@@ -13,6 +13,17 @@ describe("01 - hid", () => {
     hidStub.restore();
   });
 
+  it("should create an instance with specified hid path", async () => {
+    const hidStub = sinon.stub(HID, "HID").returns({ on: () => {} });
+    const options = {
+      hid: "/dev/hidrawX",
+    };
+    new AxpertMonitor(options);
+    expect(hidStub.callCount).eql(1);
+    expect(hidStub.args[0][0]).eql(options.hid);
+    hidStub.restore();
+  });
+
   it("should create an instance with overwritten VID & PID", async () => {
     const vid = 1;
     const pid = 2;

@@ -174,9 +174,27 @@ describe("04 - get interface", function () {
     delete process.env.ALT_DATASET;
   });
 
-  it("should get formatted output mode", async () => {
+  it("should get formatted output mode (CRC bug)", async () => {
     const response = await axpert.get.outputMode();
     expect(response).eql("Parallel");
+  });
+
+  it("should get formatted output mode (correct CRC)", async () => {
+    process.env.ALT_DATASET = "true";
+    const response = await axpert.get.outputMode();
+    expect(response).eql("Parallel");
+    delete process.env.ALT_DATASET;
+  });
+
+  it("should throw error for any other bad CRC for output mode", async () => {
+    process.env.ERROR_DATASET = "true";
+    try {
+      await axpert.get.outputMode();
+      throw Error("unexpected");
+    } catch (err) {
+      expect(err.message).contains("CRC missmatch");
+    }
+    delete process.env.ERROR_DATASET;
   });
 
   it("should get formatted parallel status 0 by default", async () => {

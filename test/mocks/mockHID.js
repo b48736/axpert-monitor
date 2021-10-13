@@ -3,7 +3,7 @@ const sleep = require("util").promisify(setTimeout);
 const getCRC = require("../../lib/crc");
 const async = require("async");
 const CR = Buffer.from("\r");
-const { sampleQueryResponses, alternativeQueryResponses } = require("./sampleData");
+const { sampleQueryResponses, alternativeQueryResponses, errorQueryResponses } = require("./sampleData");
 
 const MESSAGES = {
   TEST: `(TEST RESPONSE`,
@@ -95,6 +95,10 @@ class mockHID extends EventEmitter {
 function getSampleResponse(commandString) {
   if (process.env.ALT_DATASET === "true") {
     return Buffer.from(alternativeQueryResponses[commandString].raw, "hex");
+  }
+
+  if (process.env.ERROR_DATASET === "true") {
+    return Buffer.from(errorQueryResponses[commandString].raw, "hex");
   }
 
   return Buffer.from(sampleQueryResponses[commandString].raw, "hex");

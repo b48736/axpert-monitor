@@ -78,6 +78,16 @@ const alternativeQueryResponses = {
     raw: "28303030303030313030303031303030303030303030303030303030303030303092730d",
     parsed: "00000010000100000000000000000000",
   },
+  QOPM: {
+    raw: "283031c8000d",
+    parsed: "01",
+  },
+};
+
+const errorQueryResponses = {
+  QOPM: {
+    raw: "283031c8110d",
+  },
 };
 
 const setCommandResponses = {
@@ -87,4 +97,4 @@ const setCommandResponses = {
   },
 };
 
-module.exports = { sampleQueryResponses, alternativeQueryResponses, setCommandResponses };
+module.exports = { sampleQueryResponses, alternativeQueryResponses, setCommandResponses, errorQueryResponses };
