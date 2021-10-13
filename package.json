@@ -38,10 +38,12 @@
   },
   "dependencies": {
     "async": "^3.2.1",
+    "buffershift": "0.0.2",
     "chai": "^4.3.4",
     "crc": "^3.8.0",
     "lodash": "^4.17.21",
     "node-hid": "^2.1.1",
+    "serialport": "^9.2.4",
     "yargs": "^17.2.1"
   }
 }

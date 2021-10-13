@@ -4,7 +4,7 @@ Monitor Voltronic/Axpert inverter via USB
 
 ## Why
 
-I and couldn't find another node based solution. But thanks to [JosefKrieglstein's python implementation](https://github.com/JosefKrieglstein/AxpertControl) for useful information.
+I and couldn't find another node based solution. But thanks to [JosefKrieglstein's python implementation](https://github.com/JosefKrieglstein/AxpertControl) for useful information regarding CRC error in Axpert firmare.
 
 #### Why node
 

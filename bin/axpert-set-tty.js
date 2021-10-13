@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const AxpertUSB = require("../lib/axpertTTY");
+const AxpertTTY = require("../lib/axpertTTY");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const argv = yargs(hideBin(process.argv))
@@ -13,6 +13,11 @@ const argv = yargs(hideBin(process.argv))
     alias: "v",
     type: "string",
     description: "value to set",
+  })
+  .options("port", {
+    alias: "p",
+    type: "string",
+    description: "serial port to connect",
   }).argv;
 
 if (!argv.command) {
@@ -32,7 +37,7 @@ console.log(`Sending command: '${setCommand}'`);
 async function set() {
   let axpert = null;
   try {
-    axpert = new AxpertUSB();
+    axpert = new AxpertTTY(argv.port);
     const resp = await axpert.request(setCommand);
     console.log(resp);
   } catch (err) {

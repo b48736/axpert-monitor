@@ -80,4 +80,11 @@ const alternativeQueryResponses = {
   },
 };
 
+const setCommandResponses = {
+  POP02: {
+    raw: "2841434b39200d",
+    parsed: "ACK",
+  },
+};
+
 module.exports = { sampleQueryResponses, alternativeQueryResponses };
