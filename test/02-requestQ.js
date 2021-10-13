@@ -111,7 +111,7 @@ describe("02 - requestQ", function () {
   it("should split long requests into chuks of at most 8 bytes", async () => {
     const testCommand = "LONGLONG";
 
-    const writeSpy = sinon.spy(axpert.hid, "write");
+    const writeSpy = sinon.spy(axpert.port, "write");
 
     // this will throw, but at least check if write is called twice
     try {
