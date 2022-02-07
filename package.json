@@ -1,6 +1,6 @@
 {
   "name": "axpert-monitor",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Monitor Voltronic/Axpert inverter via USB",
   "main": "index.js",
   "scripts": {

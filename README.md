@@ -113,7 +113,8 @@ Sending command: QPIGS
     "charging": false,
     "chargingSCC": false,
     "chargingAC": false
-  }
+  },
+  "pvPower": 241
 }
 
 ```
