@@ -101,6 +101,7 @@ describe("04 - get interface", function () {
     expect(response.status).property("charging", false);
     expect(response.status).property("chargingSCC", true);
     expect(response.status).property("chargingAC", false);
+    expect(response).property("pvPower", 241);
   });
 
   it("should get formatted device mode", async () => {
