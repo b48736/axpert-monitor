@@ -61,7 +61,7 @@ axpert-udev-setup
 Remeber to add user to dialout group if not already added to allow accessing serial port
 
 ```sh
-sudo useradd <current_user> dialout
+sudo usermod -aG dialout "$USER"
 ```
 
 ### CLI
